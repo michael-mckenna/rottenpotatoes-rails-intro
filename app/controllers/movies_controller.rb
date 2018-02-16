@@ -11,12 +11,19 @@ class MoviesController < ApplicationController
   end
 
   def index
-    if params[:sort_by].nil? 
-      @movies = Movie.all
-    else
-      @movies = Movie.order(params[:sort_by])
-      @sorted_col = params[:sort_by]
-    end
+
+    # setting default table order
+    @movies = Movie.all.order(params[:sort_by])
+    
+    unless params[:ratings].nil? 
+      @movies = Movie.where(:rating => params[:ratings].keys).order(params[:sort_by])
+    end 
+
+    @sorted_col = params[:sort_by]
+    @all_ratings = Movie.all_ratings
+
+    # used in view to maintain checked checkboxes after the view is refreshed
+    @set_ratings = params[:ratings]
   end
 
   def new
